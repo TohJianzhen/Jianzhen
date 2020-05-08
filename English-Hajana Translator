@@ -1,0 +1,157 @@
+def english_word_to_hajanian(word):
+    """Returns the Hajanian version of the word"""
+    if word.endswith("y"):
+        word = word.replace("y", "yeeh")
+        return word
+    elif word.endswith("ing"):
+        word = word.replace("ing", "ingah")
+    elif word.endswith("sh"):
+        word = word.replace("sh", "shey")
+    elif "oo" in word:
+        word = word.replace("oo", "uwu")
+    elif word == "is":
+        word = word.replace(word, "oy")
+    elif word == "are":
+        word = word.replace(word, "argh")
+    elif word == "ham" or word == "sausage" or word == "bacon":
+        word = word + "!"
+    elif word == "his" or word == "her": 
+        word = word.replace(word, "hami")
+    elif word == "he" or word == "she" or word == "it":
+        word = word.replace(word, "hana")
+        return word
+    
+    return word
+
+def hajanian_word_to_english(word):
+    """Returns the English version of the word"""
+    if word.endswith("yeeh"):
+        word = word.replace("yeeh", "y")
+        return word
+    
+    elif word.endswith("ingah"):
+        word = word.replace("ingah", "ing")
+        
+    elif word.endswith("shey"):
+        word = word.replace("shey", "sh")
+        
+    elif "uwu" in word:
+        word = word.replace("uwu", "oo")
+        
+    elif word == "oy":
+        word = word.replace("oy", "is")
+        
+    elif word == "argh":
+        word = word.replace("argh", "are")
+        
+    elif word == "hami": 
+        word = word.replace("hami", "his")
+        
+    elif word == "ham!":
+        word = "ham"
+    
+    elif word == "bacon!":
+        word = "bacon"
+    
+    elif word == "sausage!":
+        word = "sausage"
+        
+    elif word == "hana":
+        word = word.replace("hana", "he")
+        return word
+
+    return word
+    
+def valid_words(dictionary, sentence):
+    """This function checks for valid words in the sentence entered"""
+    list_of_words = []
+    dic_list = dictionary.split()
+    words = sentence.split()
+    for element in words:
+        if element in dic_list:
+            list_of_words.append(element)
+    return list_of_words
+    
+def beautify_sentence(sentence, punctuation):
+    """This function removes any of the provided punctuations from the given sentence"""
+    list_of_words = sentence.split()
+    new_sentence = ""
+    if punctuation == "":
+        return sentence
+    
+    for word in list_of_words:
+        word = word.strip(punctuation)
+        new_sentence += word + " "
+    return new_sentence
+
+def translate(sentence, dictionary, punctuation, language):
+    """Translates, beautifies and removes specific punctuations in a given sentence """
+    if language == "english":
+        clean_sentence = beautify_sentence(sentence, punctuation)
+        valid_sentence = valid_words(dictionary, clean_sentence)
+        index = 0
+        translated_word = ""
+        while index < len(valid_sentence):
+            if not valid_sentence[index] == valid_sentence[-1]:
+                translated_word += str(english_word_to_hajanian(valid_sentence[index])) + " "
+            else:
+                translated_word += str(english_word_to_hajanian(valid_sentence[index]))
+            index += 1    
+        return translated_word
+        
+    elif language == "hajanian":
+        clean_sentence = beautify_sentence(sentence, punctuation)
+        valid_sentence = valid_words(dictionary, clean_sentence)
+        second_index = 0
+        translated_word = ""
+        while second_index < len(valid_sentence):
+            if not valid_sentence[second_index] == valid_sentence[-1]:
+                translated_word += str(hajanian_word_to_english(valid_sentence[second_index])) + " "
+            else:
+                translated_word += str(hajanian_word_to_english(valid_sentence[second_index]))
+            second_index += 1
+        return translated_word
+    
+    
+    return ("invalid language.")
+
+def user_interaction():
+    """Input a sentence in a specific language and translate it another language """
+    choose_language = input("Which language? ")
+    pick_dictionary = input("Do you have a dictionary? ")
+    if pick_dictionary == "yes":
+        dic_sentence = input("Enter dictionary sentence. ")
+        punctuation_filters = input("Enter punctuation filters. ")
+        input_sentence = input("Enter "+ choose_language + " sentence. ")
+        print (translate(input_sentence, dic_sentence, punctuation_filters, choose_language))
+    elif pick_dictionary == "no" or pick_dictionary == "":
+        punctuation_filters = input("Enter punctuation filters. ")
+        if punctuation_filters == "":
+            input_sentence = input("Enter "+ choose_language + " sentence. ")
+            new_sentence = beautify_sentence(input_sentence, punctuation_filters)
+            print (translate(new_sentence, new_sentence, punctuation_filters, choose_language))
+        
+        else:
+            input_sentence = input("Enter "+ choose_language + " sentence. ")
+            new_sentence = beautify_sentence(input_sentence, punctuation_filters)
+            print (translate(input_sentence, new_sentence, punctuation_filters, choose_language)) 
+   
+    
+def error_rate(sentence):
+    """This function analyses the given sentence and returns a percentage of errors when translating"""
+    translated_sentence = translate(sentence, sentence,"", "english")
+    second_translate = translate(translated_sentence, translated_sentence,"","hajanian")
+    list_sentence = sentence.split()
+    list_second = second_translate.split()
+    index = 0
+    count = 0
+    while index < len(list_second):
+        if list_sentence[index] != list_second[index]:
+            count += 1
+            index += 1
+        else:
+            count += 0
+            index += 1
+    error = count / len(list_sentence)
+    return error
+    
