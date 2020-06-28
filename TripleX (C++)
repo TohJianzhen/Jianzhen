@@ -1,0 +1,70 @@
+#include <iostream>
+#include <ctime>
+
+void PrintIntroduction(int Difficulty)
+{
+    std::cout << "\nYou are a world class PUBG mobile player trying to open a supply drop which is level " << Difficulty << std::endl;
+    std::cout << "Enter the correct code to open the supply drop\n";
+}
+
+bool PlayGame(int Difficulty)
+{
+    PrintIntroduction(Difficulty);
+
+    //Level difficulties
+    const int CodeA = rand() % (Difficulty * 2);
+    const int CodeB = rand() % (Difficulty * 2);
+    const int CodeC = rand() % (Difficulty * 2);
+
+    const int CodeSum = CodeA + CodeB + CodeC;
+    const int CodeProduct = CodeA * CodeB * CodeC;
+
+    /*
+    Prints out the sum and product in the terminal
+    */
+    std::cout << std::endl;
+    std::cout << "+ There are 3 numbers in the code";
+    std::cout << "\n+ The codes add up to: " << CodeSum;
+    std::cout << "\n+ The product of the code is: " << CodeProduct << std::endl;
+
+    int GuessA, GuessB, GuessC;
+    std::cin >> GuessA >> GuessB >> GuessC;
+
+    int GuessSum = GuessA + GuessB + GuessC;
+    int GuessProd = GuessA * GuessB * GuessC;
+    std::cout << "\nYou entered: " << GuessSum;
+
+    // Checks if the input is correct
+    if(GuessSum == CodeSum && GuessProd == CodeProduct)
+    {
+        std::cout << "\n+++ Excellent you have received a level 3 gear! +++\n";
+        return true;
+    }
+    else
+    {
+        std::cout << "\n+++ Mission Failed, try again +++\n";
+        return false;
+    }
+}
+
+int main()
+{
+    srand(time(NULL));
+
+    int LevelDifficulty = 1;
+    const int MaxLevel = 4;
+    
+    while(LevelDifficulty <= MaxLevel)
+    {
+        bool bLevelComplete = PlayGame(LevelDifficulty);
+        std::cin.clear();
+        std::cin.ignore();
+
+        if(bLevelComplete)
+        {
+            ++LevelDifficulty;
+        }
+    }
+    std::cout << "\n+++ You have received a bonus AWP, Good work and get that chicken dinner! +++\n";
+    return 0;   
+}
