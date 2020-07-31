@@ -1,0 +1,124 @@
+# Pong game using turtle
+# Author: Jianzhen Toh
+# Start Date: 30.7.20
+
+import turtle
+
+win = turtle.Screen()  # Returns a screen
+win.title("Pong by Jianzhen Toh")  # Provides a title
+win.bgcolor("black")  # Controls the bg color
+win.setup(width=800, height=600)  # Scales the window size
+win.tracer(0)  # Stops the window from updating, speeds up the game
+
+# Paddle A
+paddle_a = turtle.Turtle()  # Makes a object
+paddle_a.speed(0)  # speed of animation
+paddle_a.shape("square")
+paddle_a.color("white")
+paddle_a.shapesize(stretch_wid=5, stretch_len=1)
+paddle_a.penup()  # Makes sure it doesn't draw a line
+paddle_a.goto(-350, 0)
+
+# Paddle B
+paddle_b = turtle.Turtle()
+paddle_b.shape("square")
+paddle_b.speed(0)
+paddle_b.shapesize(stretch_wid=5, stretch_len=1)
+paddle_b.color("white")
+paddle_b.penup()
+paddle_b.goto(350, 0)
+
+# Ball
+ball = turtle.Turtle()
+ball.speed(0)
+ball.shape("square")
+ball.color("white")
+ball.penup()
+ball.goto(0, 0)
+ball.dx = 0.2  # Moves 0.1 pixels in the x axis
+ball.dy = 0.2  # Moves 0.1 pixels in the y axis
+
+# Pen
+pen = turtle.Turtle();
+pen.speed(0)
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 260)
+pen.write("Player A: 0 Player B: 0", align="center", font=("Courier", 24, "normal"))
+
+# Score
+score_a = 0
+score_b = 0
+
+
+# Function
+def paddle_a_up():
+    y = paddle_a.ycor()  # Returns the y coord of the paddle
+    y += 20  # Add 20 pixels
+    paddle_a.sety(y)
+
+
+def paddle_a_down():
+    y = paddle_a.ycor()  # Returns the y coord of the paddle
+    y -= 20  # Add 20 pixels
+    paddle_a.sety(y)
+
+
+def paddle_b_up():
+    y = paddle_b.ycor()  # Returns the y coord of the paddle
+    y += 20  # Add 20 pixels
+    paddle_b.sety(y)
+
+
+def paddle_b_down():
+    y = paddle_b.ycor()  # Returns the y coord of the paddle
+    y -= 20  # Add 20 pixels
+    paddle_b.sety(y)
+
+
+# Keyboard Binding
+win.listen()  # listens to keyboard input
+win.onkeypress(paddle_a_up, "w")  # Listens to keyboard press w and calls paddle_a_up
+win.onkeypress(paddle_a_down, "s")  # Listens to keyboard press w and calls paddle_a_up
+win.onkeypress(paddle_b_up, "Up")  # Listens to keyboard press w and calls paddle_a_up
+win.onkeypress(paddle_b_down, "Down")  # Listens to keyboard press w and calls paddle_a_up
+
+# Main Game Loop
+while True:
+    win.update()
+
+    # Move the ball
+    ball.setx(ball.xcor() + ball.dx)
+    ball.sety(ball.ycor() + ball.dy)
+
+    # Border check
+    if ball.ycor() > 290:
+        ball.sety(290)
+        ball.dy *= -1
+
+    if ball.ycor() < -290:
+        ball.sety(-290)
+        ball.dy *= -1
+
+    if ball.xcor() > 390:
+        ball.goto(0, 0)
+        ball.dx *= -1
+        score_a += 1
+        pen.clear()
+        pen.write("Player A: {} Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
+
+    if ball.xcor() < -390:
+        ball.goto(0, 0)
+        ball.dx *= -1
+        score_b += 1
+        pen.clear()
+        pen.write("Player A: {} Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
+
+    if (340 < ball.xcor() < 350) and (paddle_b.ycor() + 40 > ball.ycor() > paddle_b.ycor() - 40):
+        ball.setx(340)
+        ball.dx *= -1
+
+    if (-350 < ball.xcor() < -340) and (paddle_a.ycor() + 40 > ball.ycor() > paddle_a.ycor() - 40):
+        ball.setx(-340)
+        ball.dx *= -1
